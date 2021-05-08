@@ -1,11 +1,8 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import Table from "./Table";
-import { Button, Input, Form } from 'antd';
+import { Button } from 'antd';
 import axios from "axios";
 import BackendURL from "../Constants/beckendURL";
-import { OmitProps } from "antd/lib/transfer/renderListBody";
-import { Modal, ModalHeader, ModalBody } from "reactstrap";
-import FormItem from "antd/lib/form/FormItem";
 class Invoices extends Component {
     constructor(props) {
         super(props);

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Tabs, Button, Divider, Checkbox, notification } from 'antd';
+import { Tabs, Button, notification } from 'antd';
 import ManageUsers from "./ManageUsers";
 import Customers from "./Customers";
 import Products from "./Products";

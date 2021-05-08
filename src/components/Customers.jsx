@@ -1,6 +1,6 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import Table from "./Table";
-import { Button, Input, Form } from 'antd';
+import { Button } from 'antd';
 import axios from "axios";
 import BackendURL from "../Constants/beckendURL";
 import { OmitProps } from "antd/lib/transfer/renderListBody";
