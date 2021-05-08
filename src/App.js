@@ -4,7 +4,7 @@ import Login from "./components/login";
 import Home from "./components/home";
 import "./App.css";
 import 'antd/dist/antd.css'
-import backendURL from "./Constants/beckendURL"
+import backendURL from "./Constants"
 import axios from "axios";
 import { notification } from "antd";
 

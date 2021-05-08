@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Table from "./Table";
 import { Button, Input, Form, notification } from 'antd';
 import axios from "axios";
-import BackendURL from "../Constants/beckendURL";
+import BackendURL from "../Constants";
 import { OmitProps } from "antd/lib/transfer/renderListBody";
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 import FormItem from "antd/lib/form/FormItem";
@@ -12,6 +12,7 @@ class ManageUsers extends Component {
         this.state = {
             data: [],
             isOpen: false,
+            loading: true,
             user: {}
         };
     }
@@ -23,7 +24,7 @@ class ManageUsers extends Component {
     load = async () => {
         let { data } = await axios.get(`${BackendURL}/user/get`)
         data = data.map((d, key) => ({ ...d, key: key + "" }))
-        this.setState({ data })
+        this.setState({ data, loading: false })
     }
 
     cols = [
@@ -31,7 +32,6 @@ class ManageUsers extends Component {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            render: text => <a>{text}</a>,
         },
         {
             title: 'Email',
@@ -44,19 +44,25 @@ class ManageUsers extends Component {
             key: 'username',
         },
         {
+            title: 'Password',
+            dataIndex: 'password',
+            key: 'password',
+            render: text => <Input.Password value={text} />
+        },
+        {
             title: "Action",
             key: 'action',
             dataIndex: 'email',
             align: 'right',
-            render: (email) => (
+            render: email => (
                 <Button onClick={() => this.delete(email)}>Delete</Button>
             ),
         },
     ];
 
     delete = (email) => {
-        axios.delete(`${BackendURL}/user/delete/${email}`).then(({data}) => {
-            notification.success({ message:data, description: `User(${email}) successfully deleted` });
+        axios.delete(`${BackendURL}/user/delete/${email}`).then(({ data }) => {
+            notification.success({ message: data, description: `User(${email}) successfully deleted` });
             this.load()
         })
     }
@@ -76,7 +82,7 @@ class ManageUsers extends Component {
                 <Button onClick={this.toggle} style={{ marginBottom: 16 }}>
                     Add new user
                 </Button>
-                <Table dataSource={this.state.data} columns={this.cols} />
+                <Table dataSource={this.state.data} columns={this.cols} loading={this.state.loading} />
                 <Modal isOpen={this.state.isOpen}>
                     <ModalHeader toggle={this.toggle}>Add New Web User</ModalHeader>
                     <ModalBody>

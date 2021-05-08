@@ -1,17 +1,16 @@
 import React, { Component } from "react";
 import Table from "./Table";
-import { Button } from 'antd';
+import { Input } from 'antd';
 import axios from "axios";
-import BackendURL from "../Constants/beckendURL";
-import { OmitProps } from "antd/lib/transfer/renderListBody";
-import { Modal, ModalHeader, ModalBody } from "reactstrap";
-import FormItem from "antd/lib/form/FormItem";
+import BackendURL, { createCols, searchInObject } from "../Constants";
 class Customers extends Component {
     constructor(props) {
         super(props);
         this.state = {
             data: [],
+            cols: [],
             isOpen: false,
+            loading: true,
             user: {}
         };
     }
@@ -22,44 +21,27 @@ class Customers extends Component {
 
     load = async () => {
         let { data } = await axios.get(`${BackendURL}/customer/get`)
+        data = data.map(d => {
+            Object.keys(d).forEach(key => {
+                if (Array.isArray(d[key])) {
+                    delete d[key]
+                }
+            })
+            return d
+        })
+        let cols = createCols(data[0])
         data = data.map((d, key) => ({ ...d, key: key + "" }))
-        this.setState({ data })
+        this.setState({ data, cols, loading: false })
     }
 
-    cols = [
-        {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
-            render: text => <a>{text}</a>,
-        },
-        {
-            title: 'Email',
-            dataIndex: 'email',
-            key: 'email',
-        },
-        {
-            title: 'Username',
-            dataIndex: 'username',
-            key: 'username',
-        },
-        {
-            title: "Action",
-            key: 'action',
-            dataIndex: 'email',
-            align: 'right',
-            render: (email) => (
-                <Button onClick={() => axios.delete(`${BackendURL}/user/delete/${email}`).then(this.load)}>Delete</Button>
-            ),
-        },
-    ];
-
-
     render() {
-
+        let { search, data, cols,loading } = this.state
+        if (search)
+            data = searchInObject(search, data)
         return (
             <div className="ml-2 mr-2">
-                <Table dataSource={this.state.data} columns={this.cols} />
+                <Input.Search placeholder="input search text" onChange={({ target: { value: search } }) => this.setState({ search })} style={{ width: 450 }} />
+                <Table dataSource={data} columns={cols} loading={loading} />
             </div>
         );
     }
