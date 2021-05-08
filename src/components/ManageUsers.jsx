@@ -55,8 +55,8 @@ class ManageUsers extends Component {
     ];
 
     delete = (email) => {
-        axios.delete(`${BackendURL}/user/delete/${email}`).then(message => {
-            notification.success({ message, description: `User(${email}) successfully deleted` });
+        axios.delete(`${BackendURL}/user/delete/${email}`).then(({data}) => {
+            notification.success({ message:data, description: `User(${email}) successfully deleted` });
             this.load()
         })
     }
