@@ -6,6 +6,7 @@ import "./App.css";
 import 'antd/dist/antd.css'
 import backendURL from "./Constants/beckendURL"
 import axios from "axios";
+import { notification } from "antd";
 
 export default class App extends Component {
     constructor(props) {
@@ -23,6 +24,8 @@ export default class App extends Component {
         if (user) {
             localStorage.setItem("user", JSON.stringify(user))
             this.setState({ user })
+        } else {
+            notification.error({ message: "Unable to login", description: "Wrong username/password" })
         }
     }
 
