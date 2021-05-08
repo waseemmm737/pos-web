@@ -1,6 +1,16 @@
 export const BackendURL = "https://pos-backen.herokuapp.com"
+const RemovedCols = [
+    "deletedby",
+    "deletedat",
+    // "received",
+    // "change",
+    // "discountpercent",
+    "isdeleted",
+    "issynced"
+]
 export const createCols = (object) => Object
     .keys(object)
+    .filter(key => (!RemovedCols.includes(key.toLowerCase())))
     .map(key => ({
         key,
         dataIndex: key,
