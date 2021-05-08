@@ -140,7 +140,7 @@ class Invoices extends Component {
             <div className="ml-2 mr-2">
                 <Input.Search placeholder="input search text" onChange={({ target: { value: search } }) => this.setState({ search })} style={{ width: 450 }} />
                 <Table dataSource={data.map(o => o.invoiceId).filter((v, i, a) => a.indexOf(v) === i).map(invoiceId => data.find(d => d.invoiceId === invoiceId))} columns={this.cols} loading={loading} />
-                {selectedInvoiceId && <Modal isOpen={this.state.isOpen}>
+                {selectedInvoiceId && <Modal size="lg" isOpen={this.state.isOpen}>
                     <ModalHeader toggle={() => this.toggle(null)}>{selectedInvoiceId}</ModalHeader>
                     <ModalBody>
                         <Table dataSource={data.filter(d => d.invoiceId === selectedInvoiceId)} columns={this.itemsCols} loading={loading} />
