@@ -3,24 +3,42 @@ import { Redirect, Route, Switch, BrowserRouter } from "react-router-dom";
 import Login from "./components/login";
 import Home from "./components/home";
 import "./App.css";
+import 'antd/dist/antd.css'
+import backendURL from "./Constants/beckendURL"
+import axios from "axios";
 
 export default class App extends Component {
-  Layout = (props) => {
-    return <Route {...props} />;
-  };
+    constructor(props) {
+        super(props);
+        this.state = { user: JSON.parse(localStorage.getItem("user")) };
+    }
 
-  render() {
-    const Layout = this.Layout;
-    return (
-      <BrowserRouter>
-        <Switch>
-          {/* <Layout exact path="/" component={() => Nav} /> */}
-          <Route exact path="/login" component={() => <Login />} />
-          <Route exact path="/home" component={() => <Home />} />
-          <Route exact path="/not-found" component={() => <h1>NotFound</h1>} />
-          <Redirect to="/not-found" />
-        </Switch>
-      </BrowserRouter>
-    );
-  }
+    Layout = (props) => {
+        return <Route {...props} />;
+    };
+
+    login = async (username, password) => {
+        const response = await axios.post(`${backendURL}/user/auth`, { username, password })
+        const { data: user } = response
+        if (user) {
+            localStorage.setItem("user", JSON.stringify(user))
+            this.setState({ user })
+        }
+    }
+
+    signout = () => this.setState({ user: null }, () => localStorage.removeItem("user"))
+
+    render() {
+        const Layout = this.Layout;
+        return (
+            <BrowserRouter>
+                <Switch>
+                    <Layout exact path="/login" component={(props) => <Login {...props} login={this.login} user={this.state.user} />} />
+                    <Layout exact path="/" component={(props) => <Home {...props} user={this.state.user} signout={this.signout} />} />
+                    <Layout exact path="/not-found" component={() => <h1>Not Found</h1>} />
+                    <Redirect to="/not-found" />
+                </Switch>
+            </BrowserRouter>
+        );
+    }
 }
