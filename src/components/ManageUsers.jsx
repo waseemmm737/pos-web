@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import Table from "./Table";
-import { Button, Input, Form } from 'antd';
+import { Button, Input, Form, notification } from 'antd';
 import axios from "axios";
 import BackendURL from "../Constants/beckendURL";
 import { OmitProps } from "antd/lib/transfer/renderListBody";
@@ -49,13 +49,19 @@ class ManageUsers extends Component {
             dataIndex: 'email',
             align: 'right',
             render: (email) => (
-                <Button onClick={() => axios.delete(`${BackendURL}/user/delete/${email}`).then(this.load)}>Delete</Button>
+                <Button onClick={() => this.delete(email)}>Delete</Button>
             ),
         },
     ];
 
+    delete = (email) => {
+        axios.delete(`${BackendURL}/user/delete/${email}`).then(message => {
+            notification.success({ message, description: `User(${email}) successfully deleted` });
+            this.load()
+        })
+    }
     submit = async () => {
-        await axios.post(`${BackendURL}/user/add`,this.state.user)
+        await axios.post(`${BackendURL}/user/add`, this.state.user)
         this.toggle()
         this.load()
     }
@@ -85,10 +91,10 @@ class ManageUsers extends Component {
                                 <Input allowClear placeholder="Username" value={username} onChange={({ target: { value: username } }) => this.setState({ user: { ...this.state.user, username } })} />
                             </FormItem>
                             <FormItem>
-                                <Input.Password allowClear placeholder="input password" value={password} onChange={({ target: { value: password } }) => this.setState({ user: { ...this.state.user, password } })} />
+                                <Input.Password allowClear placeholder="Password" value={password} onChange={({ target: { value: password } }) => this.setState({ user: { ...this.state.user, password } })} />
                             </FormItem>
                             <FormItem>
-                                <Button onClick={this.submit}>submit</Button>
+                                <Button htmlType="submit" disabled={!(name && email && password && username)} onClick={this.submit}>submit</Button>
                             </FormItem>
                         </Form>
                     </ModalBody>

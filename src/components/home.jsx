@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Tabs, Button, Divider, Checkbox } from 'antd';
+import { Tabs, Button, Divider, Checkbox, notification } from 'antd';
 import ManageUsers from "./ManageUsers";
 import Customers from "./Customers";
 import Products from "./Products";
@@ -8,11 +8,12 @@ const { TabPane } = Tabs;
 class Home extends Component {
     render() {
         if (!this.props.user) {
+            notification.info({ message: "Not Authorized", description: "You're not logged in. Please login first" })
              this.props.history.push("/login")
              return ""
         }
         return (
-            <Tabs defaultActiveKey="1" tabBarExtraContent={<Button onClick={this.props.signout}>signout</Button>}>
+            <Tabs defaultActiveKey="1" tabBarExtraContent={<Button className="mr-2" onClick={this.props.signout}>signout</Button>}>
                 {this.props.user.isAdmin && <TabPane tab="Manage Users" key="1">
                     <ManageUsers />
                 </TabPane>}

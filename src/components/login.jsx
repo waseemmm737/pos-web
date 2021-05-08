@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import {
-    Button,
     Form,
     FormGroup,
     Label,
@@ -9,6 +8,7 @@ import {
     Row,
     Col,
 } from "reactstrap";
+import { Button } from "antd";
 
 class Login extends Component {
     constructor(props) {
@@ -23,7 +23,7 @@ class Login extends Component {
         }
         return (
             <React.Fragment>
-                <Container className="mt-5">
+                <Container className="mt-5 user-select-none">
                     <Row>
                         <Col lg={{ size: 6, offset: 3 }}>
                             <h1>Login</h1>
@@ -51,7 +51,6 @@ class Login extends Component {
                                     />
                                 </FormGroup>
                                 <Button
-                                    color="primary"
                                     onClick={() => this.props.login(this.state.username, this.state.password)}
                                 >
                                     Login
