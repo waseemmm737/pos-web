@@ -2,7 +2,7 @@ export const BackendURL = "https://pos-backen.herokuapp.com"
 const RemovedCols = [
     "deletedby",
     "deletedat",
-    // "received",
+    "description",
     // "change",
     // "discountpercent",
     "isdeleted",
@@ -17,6 +17,7 @@ export const createCols = (object) => Object
         title: key.toLocaleUpperCase(),
         sortDirections: ['ascend', 'descend'],
         sorter: (a, b) => a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0,
+        render: text => key.toLowerCase() === "createdat" ? new Date(text).toDateString() : text === true ? "Active" : text === false ? "In Active" : text
     }))
 export const searchInObject = (text, allData) => {
     let data = allData.filter((data) => {

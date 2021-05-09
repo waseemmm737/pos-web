@@ -4,6 +4,7 @@ import ManageUsers from "./ManageUsers";
 import Customers from "./Customers";
 import Products from "./Products";
 import Invoices from "./Invoices";
+import Purchases from "./Purchases";
 const { TabPane } = Tabs;
 class Home extends Component {
     render() {
@@ -25,6 +26,9 @@ class Home extends Component {
                 </TabPane>
                 <TabPane tab="Invoices" key="4">
                     <Invoices />
+                </TabPane>
+                <TabPane tab="Purchases" key="5">
+                    <Purchases />
                 </TabPane>
             </Tabs>
         );
