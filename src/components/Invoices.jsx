@@ -136,7 +136,7 @@ class Invoices extends Component {
     toggle = (selectedInvoiceId) => this.setState({ isOpen: !this.state.isOpen, selectedInvoiceId })
 
     render() {
-        let { search, data, loading, selectedInvoiceId, dateRange } = this.state
+        let { search, data, loading, selectedInvoiceId, dateRange, fakeLoader } = this.state
         if (typeof dateRange[0] === "object" && typeof dateRange[1] === "object") {
             let condition = (d) => {
                 return new Date(d.createdAt) >= new Date(dateRange[0]) && new Date(d.createdAt) <= new Date(dateRange[1])
@@ -147,15 +147,19 @@ class Invoices extends Component {
             data = searchInObject(search, data)
         let invoicesData = data.map(o => o.invoiceId).filter((v, i, a) => a.indexOf(v) === i).map(invoiceId => data.find(d => d.invoiceId === invoiceId))
         let count = invoicesData.length
+        if(fakeLoader)
+        setTimeout(() => {
+            this.setState({ fakeLoader: false })
+        }, 2000);
         return (
             <div className="ml-2 mr-2">
                 <Input.Search placeholder="input search text" onChange={({ target: { value: search } }) => this.setState({ search })} style={{ width: 450 }} />
                 <DatePicker.RangePicker
                     className="ml-2"
-                    onChange={dateRange => this.setState({ dateRange: [dateRange[0]?.startOf("day")?.toDate(), dateRange[1]?.endOf("day")?.toDate()] })}
+                    onChange={dateRange => this.setState({ fakeLoader: true, dateRange: [dateRange[0]?.startOf("day")?.toDate(), dateRange[1]?.endOf("day")?.toDate()] })}
                 />
                 <Tag className="float-right">{`Total ${count}`}</Tag>
-                <Table dataSource={invoicesData} columns={this.cols} loading={loading} />
+                <Table dataSource={invoicesData} columns={this.cols} loading={loading || fakeLoader} />
                 {selectedInvoiceId && <Modal size="lg" isOpen={this.state.isOpen}>
                     <ModalHeader toggle={() => this.toggle(null)}>{data.filter(d => d.invoiceId === selectedInvoiceId)[0]?.invoiceNumber}</ModalHeader>
                     <ModalBody>

@@ -36,7 +36,7 @@ class Purchases extends Component {
     }
 
     render() {
-        let { search, data, cols, loading, dateRange } = this.state
+        let { search, data, cols, loading, dateRange, fakeLoader } = this.state
         if (typeof dateRange[0] === "object" && typeof dateRange[1] === "object") {
             let condition = (d) => {
                 return new Date(d.createdAt) >= new Date(dateRange[0]) && new Date(d.createdAt) <= new Date(dateRange[1])
@@ -45,14 +45,18 @@ class Purchases extends Component {
         }
         if (search)
             data = searchInObject(search, data)
+        if (fakeLoader)
+            setTimeout(() => {
+                this.setState({ fakeLoader: false })
+            }, 2000);
         return (
             <div className="ml-2 mr-2">
                 <Input.Search placeholder="input search text" onChange={({ target: { value: search } }) => this.setState({ search })} style={{ width: 450 }} />
                 <DatePicker.RangePicker
                     className="ml-2"
-                    onChange={dateRange => this.setState({ dateRange: [dateRange[0]?.startOf("day")?.toDate(), dateRange[1]?.endOf("day")?.toDate()] })}
+                    onChange={dateRange => this.setState({ fakeLoader: true, dateRange: [dateRange[0]?.startOf("day")?.toDate(), dateRange[1]?.endOf("day")?.toDate()] })}
                 />
-                <Table dataSource={data} columns={cols} loading={loading} />
+                <Table dataSource={data} columns={cols} loading={loading || fakeLoader} />
             </div>
         );
     }

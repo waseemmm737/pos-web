@@ -22,6 +22,12 @@ class Products extends Component {
         let { data } = await axios.get(`${BackendURL}/product/get`)
         data = data.map(d => {
             Object.keys(d).forEach(key => {
+                if (typeof d[key] === "boolean") {
+                    if (key === "status")
+                        d[key] = d[key] === true ? "Active" : "InActive"
+                    else
+                        delete d[key]
+                }
                 if (Array.isArray(d[key])) {
                     delete d[key]
                 }

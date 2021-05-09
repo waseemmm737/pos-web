@@ -17,7 +17,7 @@ export const createCols = (object) => Object
         title: key.toLocaleUpperCase(),
         sortDirections: ['ascend', 'descend'],
         sorter: (a, b) => a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0,
-        render: text => key.toLowerCase() === "createdat" ? new Date(text).toDateString() : text === true ? "Active" : text === false ? "In Active" : text
+        render: text => key.toLowerCase() === "createdat" ? new Date(text).toDateString() : text
     }))
 export const searchInObject = (text, allData) => {
     let data = allData.filter((data) => {
