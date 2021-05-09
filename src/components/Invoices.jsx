@@ -137,14 +137,14 @@ class Invoices extends Component {
 
     render() {
         let { search, data, loading, selectedInvoiceId, dateRange } = this.state
-        if (search)
-            data = searchInObject(search, data)
         if (typeof dateRange[0] === "object" && typeof dateRange[1] === "object") {
             let condition = (d) => {
                 return new Date(d.createdAt) >= new Date(dateRange[0]) && new Date(d.createdAt) <= new Date(dateRange[1])
             }
             data = data.filter(d => condition(d))
         }
+        if (search)
+            data = searchInObject(search, data)
         let invoicesData = data.map(o => o.invoiceId).filter((v, i, a) => a.indexOf(v) === i).map(invoiceId => data.find(d => d.invoiceId === invoiceId))
         let count = invoicesData.length
         return (
