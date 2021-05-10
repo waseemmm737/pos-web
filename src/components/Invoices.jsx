@@ -37,7 +37,7 @@ class Invoices extends Component {
         this.setState({ data, loading: false })
     }
 
-    cols = [
+    cols = (total = 0) => [
         {
             title: 'Invoice Number',
             dataIndex: 'invoiceNumber',
@@ -79,12 +79,26 @@ class Invoices extends Component {
             title: 'Total',
             dataIndex: 'total',
             key: 'total',
+            children: [
+                {
+                    title: <span className="text-muted">Total Sum ~</span>,
+                    dataIndex: 'total',
+                    key: 'total',
+                },
+            ],
             sorter: (a, b) => a.total < b.total ? -1 : a.total > b.total ? 1 : 0,
         },
         {
             title: 'Total To Pay',
             dataIndex: 'totalToPay',
             key: 'totalToPay',
+            children: [
+                {
+                    title: <b>{parseInt(total)}</b>,
+                    dataIndex: 'totalToPay',
+                    key: 'totalToPay',
+                },
+            ],
             sorter: (a, b) => a.totalToPay < b.totalToPay ? -1 : a.totalToPay > b.totalToPay ? 1 : 0,
         },
         {
@@ -147,10 +161,12 @@ class Invoices extends Component {
             data = searchInObject(search, data)
         let invoicesData = data.map(o => o.invoiceId).filter((v, i, a) => a.indexOf(v) === i).map(invoiceId => data.find(d => d.invoiceId === invoiceId))
         let count = invoicesData.length
-        if(fakeLoader)
-        setTimeout(() => {
-            this.setState({ fakeLoader: false })
-        }, 2000);
+        let totalAmount = 0
+        invoicesData.forEach(data => totalAmount += data.totalToPay)
+        if (fakeLoader)
+            setTimeout(() => {
+                this.setState({ fakeLoader: false })
+            }, 2000);
         return (
             <div className="ml-2 mr-2">
                 <Input.Search placeholder="input search text" onChange={({ target: { value: search } }) => this.setState({ search })} style={{ width: 450 }} />
@@ -159,7 +175,7 @@ class Invoices extends Component {
                     onChange={dateRange => this.setState({ fakeLoader: true, dateRange: [dateRange[0]?.startOf("day")?.toDate(), dateRange[1]?.endOf("day")?.toDate()] })}
                 />
                 <Tag className="float-right">{`Total ${count}`}</Tag>
-                <Table dataSource={invoicesData} columns={this.cols} loading={loading || fakeLoader} />
+                <Table dataSource={invoicesData} columns={this.cols(totalAmount)} loading={loading || fakeLoader} />
                 {selectedInvoiceId && <Modal size="lg" isOpen={this.state.isOpen}>
                     <ModalHeader toggle={() => this.toggle(null)}>{data.filter(d => d.invoiceId === selectedInvoiceId)[0]?.invoiceNumber}</ModalHeader>
                     <ModalBody>
