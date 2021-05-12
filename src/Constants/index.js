@@ -8,7 +8,7 @@ const RemovedCols = [
     "isdeleted",
     "issynced"
 ]
-export const createCols = (object) => Object
+export const createCols = (object = {}) => Object
     .keys(object)
     .filter(key => (!RemovedCols.includes(key.toLowerCase())))
     .map(key => ({
@@ -19,7 +19,7 @@ export const createCols = (object) => Object
         sorter: (a, b) => a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0,
         render: text => key.toLowerCase() === "createdat" ? new Date(text).toDateString() : text
     }))
-export const searchInObject = (text, allData) => {
+export const searchInObject = (text = "", allData = []) => {
     let data = allData.filter((data) => {
         return Object.values(data)
             .join("")

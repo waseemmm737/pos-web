@@ -3,7 +3,7 @@ import Table from "./Table";
 import { Input, Button, DatePicker, Tag } from 'antd';
 import axios from "axios";
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
-import BackendURL, { createCols, searchInObject } from "../Constants";
+import BackendURL, { searchInObject } from "../Constants";
 class Invoices extends Component {
     constructor(props) {
         super(props);

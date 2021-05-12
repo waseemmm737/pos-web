@@ -3,7 +3,6 @@ import Table from "./Table";
 import { Button, Input, Form, notification } from 'antd';
 import axios from "axios";
 import BackendURL from "../Constants";
-import { OmitProps } from "antd/lib/transfer/renderListBody";
 import { Modal, ModalHeader, ModalBody } from "reactstrap";
 import FormItem from "antd/lib/form/FormItem";
 class ManageUsers extends Component {
