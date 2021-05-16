@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import Table from "./Table";
-import { Input, Button, DatePicker, Tag } from 'antd';
+import { Input, Button, DatePicker } from 'antd';
 import axios from "axios";
-import { Modal, ModalHeader, ModalBody } from "reactstrap";
+import { Modal, ModalHeader, ModalBody, Row, Card, CardBody, Col } from "reactstrap";
 import BackendURL, { searchInObject } from "../Constants";
 class Invoices extends Component {
     constructor(props) {
@@ -37,7 +37,7 @@ class Invoices extends Component {
         this.setState({ data, loading: false })
     }
 
-    cols = (total = 0) => [
+    cols = [
         {
             title: 'Invoice Number',
             dataIndex: 'invoiceNumber',
@@ -79,26 +79,12 @@ class Invoices extends Component {
             title: 'Total',
             dataIndex: 'total',
             key: 'total',
-            children: [
-                {
-                    title: <span className="text-muted">Total Sum ~</span>,
-                    dataIndex: 'total',
-                    key: 'total',
-                },
-            ],
             sorter: (a, b) => a.total < b.total ? -1 : a.total > b.total ? 1 : 0,
         },
         {
             title: 'Total To Pay',
             dataIndex: 'totalToPay',
             key: 'totalToPay',
-            children: [
-                {
-                    title: <b>{parseInt(total)}</b>,
-                    dataIndex: 'totalToPay',
-                    key: 'totalToPay',
-                },
-            ],
             sorter: (a, b) => a.totalToPay < b.totalToPay ? -1 : a.totalToPay > b.totalToPay ? 1 : 0,
         },
         {
@@ -159,10 +145,22 @@ class Invoices extends Component {
         }
         if (search)
             data = searchInObject(search, data)
+            
         let invoicesData = data.map(o => o.invoiceId).filter((v, i, a) => a.indexOf(v) === i).map(invoiceId => data.find(d => d.invoiceId === invoiceId))
-        let count = invoicesData.length
-        let totalAmount = 0
-        invoicesData.forEach(data => totalAmount += data.totalToPay)
+
+        let count = { value: invoicesData.length, title: "Total Rows" }
+
+        let totalToPay = { value: 0, title: "Cash Recieved" }
+        invoicesData.forEach(data => totalToPay.value += data.totalToPay)
+
+        let discountAmount = { value: 0, title: "Discounted" }
+        invoicesData.forEach(data => discountAmount.value += data.discountAmount)
+
+        let total = { value: 0, title: "Total Invoice" }
+        invoicesData.forEach(data => total.value += data.total)
+
+        const cards = [total, discountAmount, totalToPay, count]
+
         if (fakeLoader)
             setTimeout(() => {
                 this.setState({ fakeLoader: false })
@@ -174,8 +172,20 @@ class Invoices extends Component {
                     className="ml-2"
                     onChange={dateRange => this.setState({ fakeLoader: true, dateRange: [dateRange[0]?.startOf("day")?.toDate(), dateRange[1]?.endOf("day")?.toDate()] })}
                 />
-                <Tag className="float-right">{`Total ${count}`}</Tag>
-                <Table dataSource={invoicesData} columns={this.cols(totalAmount)} loading={loading || fakeLoader} />
+                <Row>
+                    {
+                        cards.map(({ title, value }) => (
+                            <Col className="d-flex justify-content-center mt-2 mb-1">
+                                <Card>
+                                    <CardBody className="text-center">
+                                        <h6>{`${value}`}</h6>
+                                        <p>{title}</p>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        ))}
+                </Row>
+                <Table dataSource={invoicesData} columns={this.cols} loading={loading || fakeLoader} />
                 {selectedInvoiceId && <Modal size="lg" isOpen={this.state.isOpen}>
                     <ModalHeader toggle={() => this.toggle(null)}>{data.filter(d => d.invoiceId === selectedInvoiceId)[0]?.invoiceNumber}</ModalHeader>
                     <ModalBody>

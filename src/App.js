@@ -38,6 +38,7 @@ export default class App extends Component {
                 <Switch>
                     <Layout exact path="/login" component={(props) => <Login {...props} login={this.login} user={this.state.user} />} />
                     <Layout exact path="/" component={(props) => <Home {...props} user={this.state.user} signout={this.signout} />} />
+                    <Layout exact path="/invoices" component={(props) => <Home {...props} tab="4" user={this.state.user} signout={this.signout} />} />
                     <Layout exact path="/not-found" component={() => <h1>Not Found</h1>} />
                     <Redirect to="/not-found" />
                 </Switch>

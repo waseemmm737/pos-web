@@ -10,11 +10,11 @@ class Home extends Component {
     render() {
         if (!this.props.user) {
             notification.info({ message: "Not Authorized", description: "You're not logged in. Please login first" })
-             this.props.history.push("/login")
-             return ""
+            this.props.history.push("/login")
+            return ""
         }
         return (
-            <Tabs defaultActiveKey="1" tabBarExtraContent={<Button className="mr-2" onClick={this.props.signout}>signout</Button>}>
+            <Tabs defaultActiveKey={this.props.tab || "1"} tabBarExtraContent={<Button className="mr-2" onClick={this.props.signout}>signout</Button>}>
                 {this.props.user.isAdmin && <TabPane tab="Manage Users" key="1">
                     <ManageUsers />
                 </TabPane>}
