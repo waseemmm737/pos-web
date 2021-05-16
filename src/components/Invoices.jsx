@@ -145,7 +145,7 @@ class Invoices extends Component {
         }
         if (search)
             data = searchInObject(search, data)
-            
+
         let invoicesData = data.map(o => o.invoiceId).filter((v, i, a) => a.indexOf(v) === i).map(invoiceId => data.find(d => d.invoiceId === invoiceId))
 
         let count = { value: invoicesData.length, title: "Total Rows" }
@@ -156,10 +156,15 @@ class Invoices extends Component {
         let discountAmount = { value: 0, title: "Discounted" }
         invoicesData.forEach(data => discountAmount.value += data.discountAmount)
 
-        let total = { value: 0, title: "Total Invoice" }
+        let total = { value: 0, title: "Invoice Price" }
         invoicesData.forEach(data => total.value += data.total)
 
-        const cards = [total, discountAmount, totalToPay, count]
+        let profit = { value: 0, title: "Profit Amount" }
+        data.forEach(({ quantity, purchasePrice, salePrice }) => {
+            profit.value += quantity * (salePrice - purchasePrice)
+        })
+
+        const cards = [total, discountAmount, totalToPay, profit, count]
 
         if (fakeLoader)
             setTimeout(() => {
